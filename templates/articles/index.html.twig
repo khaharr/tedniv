@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}catalogue des Articles{% endblock %}
+
+{% block body %}
+    <h1>catalogue des Articles</h1>
+    <a href="{{ path('app_gestion_article') }}">Ajouter un article</a>
+
+    <ul>
+        {% for article in articles %}
+            <li>
+                <strong>{{ article.NomDeLarticle }}</strong>
+                <br>
+                {{ article.Description }}
+                <br>
+                Prix: {{ article.Prix }} €
+            </li>
+        {% else %}
+            <li>Aucun article trouvé.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

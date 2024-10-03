@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Articles{% endblock %}
+
+{% block body %}
+ <h1>Liste des Articles</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for article in articles %}
+            <tr>
+                <td><strong>{{ article.NomDeLarticle }}</strong></td>
+                <td>{{ article.Description }} </td>
+                <td>Prix: {{ article.Prix }} €</td>
+                <td>
+                    <a href="{{ path('app_article_affiche', {'id': article.id}) }}">show</a>
+                    <a href="{{ path('app_article_modification', {'id': article.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucun article trouvé.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_ajouter_aticle') }}">Ajouter un article</a>
+    <a href="{{ path('liste_articles') }}">retoure catalogue</a>
+
+{% endblock %}

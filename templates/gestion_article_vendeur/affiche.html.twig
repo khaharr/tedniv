@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.NomDeLarticle }}{% endblock %}
+
+{% block body %}
+    <h1>{{ article.NomDeLarticle }}</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Nom</th>
+                <td>{{ article.NomDeLarticle }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ article.Description }}</td>
+            </tr>
+            <tr>
+                <th>Prix</th>
+                <td>{{ article.Prix }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_gestion_article') }}">retoure</a>
+
+    <a href="{{ path('app_article_modification', {'id': article.id}) }}">modifier</a>
+
+    {{ include('gestion_article_vendeur/_suppression_form.html.twig') }}
+{% endblock %}

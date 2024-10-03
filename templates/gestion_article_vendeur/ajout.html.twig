@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Ajouter un article🥹</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn btn-primary">Ajouter</button>
+        <a href="{{ path('app_gestion_article') }}">retour a la liste</a>
+    {{ form_end(form) }}
+    
+{% endblock %}
