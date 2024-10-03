@@ -8,7 +8,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_RANDOM', fields: ['random'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -17,7 +16,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    private ?string $random = null;
+    private ?string $username = null;
 
     /**
      * @var list<string> The user roles
@@ -31,19 +30,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    public function __construct()
+    {
+        $this->roles = ['ROLE_USER']; // Set the default role to ROLE_USER
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getRandom(): ?string
+    public function getUsername(): ?string
     {
-        return $this->random;
+        return $this->username;
     }
 
-    public function setRandom(string $random): static
+    public function setUsername(string $username): static
     {
-        $this->random = $random;
+        $this->username = $username;
 
         return $this;
     }
@@ -55,7 +59,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->random;
+        return (string) $this->username;
     }
 
     /**
@@ -83,7 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @see PasswordAuthenticatedUserInterface
+     * @see PasswordAuthenticatedUser   Interface
      */
     public function getPassword(): ?string
     {
