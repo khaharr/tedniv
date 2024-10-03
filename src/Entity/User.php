@@ -18,7 +18,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    private ?string $random = null;
+    private ?string $username = null;
 
     /**
      * @var list<string> The user roles
@@ -32,19 +32,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\OneToOne(mappedBy: 'Account', cascade: ['persist', 'remove'])]
+    private ?Portefeuille $portefeuille = null;
+    public function __construct()
+    {
+        $this->roles = ['ROLE_USER']; // Set the default role to ROLE_USER
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getRandom(): ?string
+    public function getUsername(): ?string
     {
-        return $this->random;
+        return $this->username;
     }
 
-    public function setRandom(string $random): static
+    public function setUsername(string $username): static
     {
-        $this->random = $random;
+        $this->username = $username;
 
         return $this;
     }
@@ -56,7 +63,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->random;
+        return (string) $this->username;
     }
 
     /**
@@ -84,7 +91,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @see PasswordAuthenticatedUserInterface
+     * @see PasswordAuthenticatedUser   Interface
      */
     public function getPassword(): ?string
     {
@@ -105,5 +112,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getPortefeuille(): ?Portefeuille
+    {
+        return $this->portefeuille;
+    }
+
+    public function setPortefeuille(Portefeuille $portefeuille): static
+    {
+        // set the owning side of the relation if necessary
+        if ($portefeuille->getAccount() !== $this) {
+            $portefeuille->setAccount($this);
+        }
+
+        $this->portefeuille = $portefeuille;
+
+        return $this;
     }
 }

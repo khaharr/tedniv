@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Historique des Transactions{% endblock %}
+
+{% block body %}
+<div class="container mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-6">Historique des Transactions</h1>
+
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+        <table class="table-auto w-full">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2 border-b-2">Type</th>
+                    <th class="px-4 py-2 border-b-2">Montant (€)</th>
+                    {# <th class="px-4 py-2 border-b-2">Date</th> #}
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                    <tr class="{% if loop.index is odd %}bg-gray-50{% endif %}">
+                        <td class="px-4 py-2">{{ transaction.type.value }}</td>
+                        <td class="px-4 py-2">{{ transaction.amount }}</td>
+                        {# <td class="px-4 py-2">{{ transaction.date|date('Y-m-d H:i') }}</td> #}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{{ path('wallet_show', { id: portefeuille.id }) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Retour au porte-monnaie
+    </a>
+</div>
+{% endblock %}
