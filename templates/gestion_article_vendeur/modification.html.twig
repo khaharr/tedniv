@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}modification{% endblock %}
+
+{% block body %}
+    <h1>modification article</h1>
+
+    {{ include('gestion_article_vendeur/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_gestion_article') }}">retour a la liste</a>
+
+    {{ include('gestion_article_vendeur/_suppression_form.html.twig') }}
+{% endblock %}
