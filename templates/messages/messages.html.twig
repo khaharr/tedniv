@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Messagerie{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2>Conversation avec {{ recipient.random }}</h2>
+    <div class="message-container mb-4">
+        {% for message in messages %}
+            <div class="message {% if message.sender == app.user %}message-sent{% else %}message-received{% endif %}">
+                <p><strong>{{ message.sender.random }}:</strong></p>
+                <p>{{ message.content }}</p>
+                <small>{{ message.sentAt|date('d/m/Y H:i') }}</small>
+            </div>
+        {% else %}
+            <p>Aucun message pour le moment.</p>
+        {% endfor %}
+    </div>
+
+    <div class="send-message-form">
+        {{ form_start(form) }}
+            <div class="mb-3">
+                {{ form_widget(form.content) }}
+            </div>
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+        {{ form_end(form) }}
+    </div>
+</div>
+
+<style>
+.message-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.message-sent {
+    background-color: #d1ffd7;
+    text-align: right;
+}
+
+.message-received {
+    background-color: #ffd1d1;
+    text-align: left;
+}
+</style>
+{% endblock %}
