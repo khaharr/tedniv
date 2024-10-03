@@ -30,14 +30,20 @@ class MessageService
         return $message;
     }
 
-    // Récupère les messages entre deux utilisateurs sur un article
-    public function getMessages(User $sender, User $recipient, Articles $article): array
+    // Récupère les messages entre deux utilisateurs (ou seulement avec le destinataire si $sender est null)
+    public function getMessages(?User $sender, User $recipient, Articles $article): array
     {
+        $criteria = [
+            'recipient' => $recipient,
+            'article' => $article
+        ];
+
+        if ($sender) {
+            // Si le sender est défini, on récupère les messages entre le sender et le recipient
+            $criteria['sender'] = $sender;
+        }
+
         return $this->entityManager->getRepository(Messages::class)
-            ->findBy([
-                'sender' => $sender,
-                'recipient' => $recipient,
-                'article' => $article
-            ], ['sentAt' => 'ASC']);
+            ->findBy($criteria, ['sentAt' => 'ASC']);
     }
 }
