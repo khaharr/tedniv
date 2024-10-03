@@ -35,6 +35,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
+    #[ORM\OneToOne(mappedBy: 'Account', cascade: ['persist', 'remove'])]
+    private ?Portefeuille $portefeuille = null;
+    public function __construct()
+    {
+        $this->roles = ['ROLE_USER']; // Set the default role to ROLE_USER
+    }
 
     public function getId(): ?int
     {
@@ -88,7 +94,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @see PasswordAuthenticatedUserInterface
+     * @see PasswordAuthenticatedUser   Interface
      */
     public function getPassword(): ?string
     {
@@ -119,6 +125,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAddress(?string $address): static
     {
         $this->address = $address;
+    public function getPortefeuille(): ?Portefeuille
+    {
+        return $this->portefeuille;
+    }
+
+    public function setPortefeuille(Portefeuille $portefeuille): static
+    {
+        // set the owning side of the relation if necessary
+        if ($portefeuille->getAccount() !== $this) {
+            $portefeuille->setAccount($this);
+        }
+
+        $this->portefeuille = $portefeuille;
 
         return $this;
     }
