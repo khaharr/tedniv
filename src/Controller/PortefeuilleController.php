@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Portefeuille;
 use App\Entity\Transactions;
+use App\Enum\TransactionType;
 use App\Repository\PortefeuilleRepository;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,40 +17,52 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class PortefeuilleController extends AbstractController
 {
     #[Route('/wallet/{id}', name: 'wallet_show', methods: ['GET'])]
-    public function show(Portefeuille $Portefeuille): Response
+    public function show(Portefeuille $portefeuille): Response
     {
         // Affiche le porte-monnaie avec son solde et ses transactions
         return $this->render('portefeuille/show.html.twig', [
-            'portefeuille' => $Portefeuille,
-            'transactions' => $Portefeuille->getTransactions(),
+            'portefeuille' => $portefeuille,
+            'transactions' => $portefeuille->getTransactions(),
         ]);
     }
 
     #[Route('/wallet/{id}/transactions', name: 'wallet_transactions', methods: ['GET'])]
-    public function transactions(Portefeuille $Portefeuille): Response
+    public function transactions(Portefeuille $portefeuille): Response
     {
         // Affiche l'historique des transactions
         return $this->render('portefeuille/transactions.html.twig', [
-            'portefeuille' => $Portefeuille,
-            'transactions' => $Portefeuille->getTransactions(),
+            'portefeuille' => $portefeuille,
+            'transactions' => $portefeuille->getTransactions(),
         ]);
     }
 
-    #[Route('/wallet/{id}/deposit', name: 'wallet_deposit', methods: ['POST'])]
-    public function deposit(
+    #[Route('/wallet/{id}/update', name: 'wallet_update', methods: ['POST'])]
+    public function update(
         Request $request,
-        Portefeuille $Portefeuille,
+        Portefeuille $portefeuille,
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator,
         NotificationService $notificationService
     ): Response {
-        $montant = floatval($request->request->get('montant'));
+        $amount = floatval($request->request->get('amount'));
+        $type = $request->request->get('type');
 
         // Crée une nouvelle transaction de dépôt
         $transaction = new Transactions();
-        $transaction->setType(Transactions::DEPOSIT);
-        $transaction->setAmount($montant);
-        $transaction->setPortefeuille($Portefeuille);
+        $transaction->setAmount($amount);
+        $transaction->setPortefeuille($portefeuille);
+        if ($type === 'deposit') {
+            $transaction->setType(TransactionType::DEPOSIT);
+            $portefeuille->setSolde($portefeuille->getSolde() + $amount);
+        } elseif ($type === 'withdraw') {
+            $transaction->setType(TransactionType::WITHDRAW);
+            if ($portefeuille->getSolde() < $amount) {
+                return new Response("Solde insuffisant pour retirer {$amount}€.", Response::HTTP_BAD_REQUEST);
+            }
+            $portefeuille->setSolde($portefeuille->getSolde() - $amount);
+        } else {
+            return new Response("Type de transaction invalide : " . $type, Response::HTTP_BAD_REQUEST);
+        }
 
         // Valide l'objet Transaction
         $errors = $validator->validate($transaction);
@@ -57,16 +70,13 @@ class PortefeuilleController extends AbstractController
             return new Response((string) $errors, Response::HTTP_BAD_REQUEST);
         }
 
-        // Met à jour le solde du porte-monnaie
-        $Portefeuille->setSolde($Portefeuille->getSolde() + $montant);
-
         $entityManager->persist($transaction);
         $entityManager->flush();
 
         // Envoyer une notification
-        $notificationService->sendNotification("Dépôt de {$montant}€ effectué avec succès sur votre porte-monnaie.");
+        // $notificationService->sendNotification("Dépôt de {$amount}€ effectué avec succès sur votre porte-monnaie.");
 
-        return new Response("Dépôt de {$montant}€ effectué ! Solde actuel : " . $Portefeuille->getSolde() . "€.");
+        return new Response(($type === 'deposit' ? "Dépôt " : "Retrait ") . "de {$amount}€ effectué ! Solde actuel : " . $portefeuille->getSolde() . "€.");
     }
 
     #[Route('/wallet/{id}/withdraw', name: 'wallet_withdraw', methods: ['POST'])]
@@ -77,12 +87,12 @@ class PortefeuilleController extends AbstractController
         ValidatorInterface $validator,
         NotificationService $notificationService
     ): Response {
-        $montant = floatval($request->request->get('montant'));
+        $amount = floatval($request->request->get('amount'));
 
         // Crée une nouvelle transaction de retrait
         $transaction = new Transactions();
-        $transaction->setType('retrait');
-        $transaction->setAmount($montant);
+        $transaction->setType(TransactionType::WITHDRAW);
+        $transaction->setAmount($amount);
         $transaction->setPortefeuille($Portefeuille);
 
         // Valide l'objet Transaction
@@ -91,21 +101,21 @@ class PortefeuilleController extends AbstractController
             return new Response((string) $errors, Response::HTTP_BAD_REQUEST);
         }
 
-        // Vérifie si le solde est suffisant pour retirer le montant demandé
-        if ($Portefeuille->getSolde() < $montant) {
-            return new Response("Solde insuffisant pour retirer {$montant}€.", Response::HTTP_BAD_REQUEST);
+        // Vérifie si le solde est suffisant pour retirer le amount demandé
+        if ($Portefeuille->getSolde() < $amount) {
+            return new Response("Solde insuffisant pour retirer {$amount}€.", Response::HTTP_BAD_REQUEST);
         }
 
         // Met à jour le solde du porte-monnaie
-        $Portefeuille->setSolde($Portefeuille->getSolde() - $montant);
+        $Portefeuille->setSolde($Portefeuille->getSolde() - $amount);
 
         $entityManager->persist($transaction);
         $entityManager->flush();
 
         // Envoyer une notification
-        $notificationService->sendNotification("Retrait de {$montant}€ effectué avec succès sur votre porte-monnaie.");
+        // $notificationService->sendNotification("Retrait de {$amount}€ effectué avec succès sur votre porte-monnaie.");
 
-        return new Response("Retrait de {$montant}€ effectué ! Solde actuel : " . $Portefeuille->getSolde() . "€.");
+        return new Response("Retrait de {$amount}€ effectué ! Solde actuel : " . $Portefeuille->getSolde() . "€.");
     }
 
     // #[Route('/wallet/{id}/transactions/pdf', name: 'wallet_transactions_pdf', methods: ['GET'])]

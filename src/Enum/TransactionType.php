@@ -1,8 +1,8 @@
 <?php
-// src/Enum/DepositType.php
+
 namespace App\Enum;
 
-enum DepositType: string
+enum TransactionType: string
 {
     case PAYMENT = 'payment';
     case WITHDRAW = 'withdraw';

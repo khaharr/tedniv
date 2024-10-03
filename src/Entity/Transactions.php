@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Enum\DepositType;
+use App\Enum\TransactionType;
 use App\Repository\TransactionsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,8 +14,8 @@ class Transactions
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(enumType: DepositType::class)]
-    private ?DepositType $Type = null;
+    #[ORM\Column(enumType: TransactionType::class)]
+    private ?TransactionType $Type = null;
 
     #[ORM\Column]
     private ?float $Amount = null;
@@ -29,12 +29,12 @@ class Transactions
         return $this->id;
     }
 
-    public function getType(): ?DepositType
+    public function getType(): ?TransactionType
     {
         return $this->Type;
     }
 
-    public function setType(DepositType $Type): static
+    public function setType(TransactionType $Type): static
     {
         $this->Type = $Type;
 

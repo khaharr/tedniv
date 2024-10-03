@@ -1,14 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PortefeuilleController!{% endblock %}
+{% block title %}Mon Portefeuille{% endblock %}
 
 {% block body %}
+<div class="container mx-auto p-8">
+    <h1 class="text-3xl font-bold mb-6">Portefeuille de {{ portefeuille.account.random }}</h1>
 
-<div class=" text-3xl font-bold underline">
-    {# <h1>Hello {{ controller_name }}! ✅</h1> #}
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold">Solde Actuel</h2>
+        <p class="text-3xl text-green-600 font-bold">{{ portefeuille.solde }} €</p>
+    </div>
 
-    {{ portefeuille.solde }}
-    <br>
-    {{ transactions.count() }}
+    <div class="flex space-x-4">
+        <a href="{{ path('wallet_transactions', { id: portefeuille.id }) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Voir l'historique des transactions
+        </a>
+        <form action="{{ path('wallet_update', { id: portefeuille.id }) }}" method="post">
+            <input type="number" name="amount" class="border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:border-blue-300" placeholder="Montant à déposer">
+            <select name="type" class="border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:border-blue-300">
+                <option value="withdraw">Déposer</option>
+                <option value="deposit">Retirer</option>
+            </select>
+            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" id="dynamic-button">
+                Déposer de l'argent
+            </button>
+        </form>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectElement = document.querySelector('select[name="type"]');
+        const buttonElement = document.getElementById('dynamic-button');
+
+        selectElement.addEventListener('change', function() {
+            if (this.value === 'withdraw') {
+                buttonElement.textContent = "Déposer de l'argent";
+                buttonElement.classList.remove('bg-red-500', 'hover:bg-red-700');
+                buttonElement.classList.add('bg-green-500', 'hover:bg-green-700');
+            } else if (this.value === 'deposit') {
+                buttonElement.textContent = "Retirer de l'argent";
+                buttonElement.classList.remove('bg-green-500', 'hover:bg-green-700');
+                buttonElement.classList.add('bg-red-500', 'hover:bg-red-700');
+            }
+        });
+    });
+</script>
+        
 {% endblock %}
