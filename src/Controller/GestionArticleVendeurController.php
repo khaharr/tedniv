@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Form\AjoutArticleType;
+use App\Form\GestionArticleVendeurType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -10,15 +10,27 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Articles;
 use Symfony\Component\HttpFoundation\Request;
 
-class AjouterArticleController extends AbstractController
+#[Route('/gestion')]
+class GestionArticleVendeurController extends AbstractController
 {
-    #[Route('/ajouter/aticle', name: 'app_ajouter_aticle', methods: ['GET','POST'])]
-    // public function index(): Response
-    // {
-    //     return $this->render('ajouter_aticle/index.html.twig', [
-    //         'controller_name' => 'Khouya ',
-    //     ]);
-    // }
+
+    #[Route(name:'app_gestion_aticle')]
+    public function listArticles(EntityManagerInterface $entityManager): Response
+    {
+        // Récupérer le repository de l'entité Article
+        $articleRepository = $entityManager->getRepository(Articles::class);
+
+        // Récupérer tous les articles
+        $articles = $articleRepository->findAll();
+
+        // Rendre la vue avec les articles
+        return $this->render('gestion_article_vendeur/index.html.twig', [
+            'articles' => $articles,
+        ]);
+    }
+
+    #[Route('/ajouter', name: 'app_ajouter_aticle', methods: ['GET','POST'])]
+    
 
     public function ajouter(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -26,7 +38,7 @@ class AjouterArticleController extends AbstractController
         $article = new Articles();
 
         // Crée le formulaire basé sur un formulaire ArticleType
-        $form = $this->createForm(AjoutArticleType::class, $article);
+        $form = $this->createForm(GestionArticleVendeurType::class, $article);
 
         // Traite la requête
         $form->handleRequest($request);
@@ -45,8 +57,16 @@ class AjouterArticleController extends AbstractController
         }
 
         // Affiche le formulaire dans la vue
-        return $this->render('ajouter_article/index.html.twig', [
+        return $this->render('gestion_article_vendeur/ajout.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_article_affiche', methods: ['GET'])]
+    public function show(Articles $article): Response
+    {
+        return $this->render('gestion_article_vendeur/affiche.html.twig', [
+            'article' => $article,
         ]);
     }
 }
