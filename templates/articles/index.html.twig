@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Articles{% endblock %}
+
+{% block body %}
+    <h1>Liste des Articles</h1>
+
+    <ul>
+        {% for article in articles %}
+            <li>
+                <strong>{{ article.NomDeLarticle }}</strong> - {{ article.Description }}
+                <br>
+                Prix: {{ article.Prix }} €
+            </li>
+        {% else %}
+            <li>Aucun article trouvé.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
