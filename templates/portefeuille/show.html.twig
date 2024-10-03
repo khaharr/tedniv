@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PortefeuilleController!{% endblock %}
+
+{% block body %}
+
+<div class=" text-3xl font-bold underline">
+    {# <h1>Hello {{ controller_name }}! ✅</h1> #}
+
+    {{ portefeuille.solde }}
+    <br>
+    {{ transactions.count() }}
+</div>
+{% endblock %}
