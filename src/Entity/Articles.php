@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+
 use App\Repository\ArticlesRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
 
@@ -27,6 +29,21 @@ class Articles
 
     // Getters et setters...
 
+    #[ORM\Column(length: 35)]
+    private ?string $Title = null;
+
+    #[ORM\Column]
+    private ?float $Price = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $Description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $UUID = null;
+
+    #[ORM\Column(type: Types::ARRAY)]
+    private array $img = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -34,34 +51,63 @@ class Articles
 
     public function getTitle(): ?string
     {
-        return $this->title;
+        return $this->Title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(string $Title): static
     {
-        $this->title = $title;
+        $this->Title = $Title;
         return $this;
     }
 
     public function getPrice(): ?float
     {
-        return $this->price;
+        return $this->Price;
     }
 
-    public function setPrice(float $price): self
+    public function setPrice(float $Price): static
     {
-        $this->price = $price;
+        $this->Price = $Price;
+
         return $this;
     }
 
-    public function getSeller(): ?User
+    public function getDescription(): ?string
     {
-        return $this->seller;
+        return $this->Description;
     }
 
-    public function setSeller(?User $seller): self
+    public function setDescription(?string $Description): static
     {
-        $this->seller = $seller;
+        $this->Description = $Description;
+
         return $this;
     }
+
+    public function getUUID(): ?string
+    {
+        return $this->UUID;
+    }
+
+    public function setUUID(?string $UUID): static
+    {
+        $this->UUID = $UUID;
+
+        return $this;
+    }
+
+    public function getImg(): array
+    {
+        return $this->img;
+    }
+
+    public function setImg(array $img): static
+    {
+        $this->img = $img;
+
+        return $this;
+    }
+
 }
+
+
