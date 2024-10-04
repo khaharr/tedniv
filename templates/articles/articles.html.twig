@@ -118,7 +118,11 @@
 <div class="example-wrapper">
     {% for article in articles %}
         <div class="article-card">
-            <img src="{{ article.img[0] }}" alt="Image de l'article">
+            {% if article.img is not empty %}
+                <img src="{{ article.img[0] }}" alt="Image de l'article">
+            {% else %}
+                <img src="/path/to/default/image.jpg" alt="Image par défaut">
+            {% endif %}
             <div class="article-card-content">
                 <h2>{{ article.title }}</h2>
                 <p><strong>Prix :</strong> {{ article.price }} €</p>
