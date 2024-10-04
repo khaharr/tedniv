@@ -12,13 +12,13 @@
        
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
-            <link rel="stylesheet" href="{{ asset('CSS/bootstrap.min.css') }}">
+              <script src="https://cdn.tailwindcss.com"></script>
         {% endblock %}
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
-<script src="{{ asset('JS/bootstrap.bundle.min.js') }}" defer></script>
+            <script src="https://cdn.tailwindcss.com"></script>
 
         {% endblock %}
     </head>
