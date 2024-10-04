@@ -4,11 +4,11 @@
 
 {% block body %}
 <div class="container mt-5">
-    <h2>Conversation avec {{ recipient.random }}</h2>
+    <h2>Conversation avec {{ recipient.email }}</h2>
     <div class="message-container mb-4">
         {% for message in messages %}
             <div class="message {% if message.sender == app.user %}message-sent{% else %}message-received{% endif %}">
-                <p><strong>{{ message.sender.random }}:</strong></p>
+                <p><strong>{{ message.sender.email }}:</strong></p>
                 <p>{{ message.content }}</p>
                 <small>{{ message.sentAt|date('d/m/Y H:i') }}</small>
             </div>

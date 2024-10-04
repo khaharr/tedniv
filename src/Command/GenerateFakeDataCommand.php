@@ -4,6 +4,7 @@
 namespace App\Command;
 
 use App\Entity\Articles; // Importer votre entité Articles
+use App\Entity\User; // Importer votre entité User
 use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
 use Symfony\Component\Console\Command\Command;
@@ -27,6 +28,7 @@ class GenerateFakeDataCommand extends Command
             ->setName('app:generate-fake-data');
     }
 
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
@@ -35,11 +37,19 @@ class GenerateFakeDataCommand extends Command
 
             for ($i = 0; $i < $numberOfEntries; $i++) {
                 $article = new Articles();
-                $article->setTitle(implode($faker->words(3))); // Utilisation de words() à la place
+                $article->setTitle(implode(' ', $faker->words(3))); // Utilisation de words() à la place
                 $article->setPrice($faker->randomFloat(2, 5, 100)); // Prix fictif
                 $article->setDescription($faker->paragraph()); // Description fictive
                 $article->setUUID($faker->uuid()); // UUID fictif
                 $article->setImg([$faker->imageUrl(640, 480, 'cats', true)]); // Image fictive
+
+                // Set the seller_id
+                $seller = $this->entityManager->getRepository(User::class)->findOneBy([]);
+                if ($seller) {
+                    $article->setSeller($seller);
+                } else {
+                    throw new \Exception('No seller found in the database.');
+                }
 
                 $this->entityManager->persist($article);
             }

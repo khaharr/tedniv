@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Portefeuille;
+use App\Entity\User;
 use App\Entity\Transactions;
 use App\Enum\TransactionType;
 use App\Repository\PortefeuilleRepository;
@@ -16,13 +17,25 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PortefeuilleController extends AbstractController
 {
-    #[Route('/wallet/{id}', name: 'wallet_show', methods: ['GET'])]
-    public function show(Portefeuille $portefeuille): Response
+    #[Route('/wallet', name: 'wallet_show', methods: ['GET'])]
+    public function show(EntityManagerInterface $entityManager): Response
     {
-        // Affiche le porte-monnaie avec son solde et ses transactions
+        $user = $this->getUser();
+        $portefeuille = $entityManager->getRepository(Portefeuille::class)
+            ->findOneBy(['Account' => $user]);
+
+        if (!$portefeuille) {
+            $portefeuille = new Portefeuille();
+            $portefeuille->setAccount($user);
+            $portefeuille->setSolde(0);
+
+            $entityManager->persist($portefeuille);
+            $entityManager->flush();
+        }
+        
         return $this->render('portefeuille/show.html.twig', [
             'portefeuille' => $portefeuille,
-            'transactions' => $portefeuille->getTransactions(),
+            // 'transactions' => $portefeuille->getTransactions(),
         ]);
     }
 

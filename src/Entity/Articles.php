@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\ArticlesRepository;
@@ -99,5 +100,16 @@ class Articles
         $this->img = $img;
 
         return $this;
+    }
+
+    public function setSeller(User $seller): static
+    {
+        $this->seller = $seller;
+        return $this;
+    }
+
+    public function getSeller(): ?User
+    {
+        return $this->seller;
     }
 }
