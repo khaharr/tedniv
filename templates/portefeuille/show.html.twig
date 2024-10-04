@@ -15,6 +15,9 @@
         <a href="{{ path('wallet_transactions', { id: portefeuille.id }) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Voir l'historique des transactions
         </a>
+        <a href="{{ path('wallet_transactions_pdf', { id: portefeuille.id }) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Télécharger l'historique des transactions
+        </a>
         <form action="{{ path('wallet_update', { id: portefeuille.id }) }}" method="post">
             <input type="number" name="amount" class="border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:border-blue-300" placeholder="Montant à déposer">
             <select name="type" class="border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:border-blue-300">

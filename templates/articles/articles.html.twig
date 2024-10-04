@@ -114,9 +114,12 @@
 
 <div class="example-wrapper">
     {% for article in articles %}
-        <!-- Lien autour de chaque carte d'article -->
-        <a href="{{ path('app_article', { 'articleId': article.id }) }}" class="article-card">
-            <img src="{{ article.img[0] }}" alt="Image de l'article">
+        <div class="article-card">
+            {% if article.img is not empty %}
+                <img src="{{ article.img[0] }}" alt="Image de l'article">
+            {% else %}
+                <img src="/path/to/default/image.jpg" alt="Image par défaut">
+            {% endif %}
             <div class="article-card-content">
                 <h2>{{ article.title }}</h2>
                 <p><strong>Prix :</strong> {{ article.price }} €</p>
