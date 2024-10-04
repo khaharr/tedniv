@@ -3,25 +3,53 @@
 {% block title %}Liste des Articles{% endblock %}
 
 {% block body %}
-<div class="bg-transparent font-sans">
-    <div class="grid grid-cols-5 gap-8 p-24 justify-items-center sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-        {% for article in articles %}
-        <a href="{{ path('app_article', { "articleId": article.id }) }}" class="no-underline text-black">
-            <div class="relative w-56 h-88 bg-white overflow-hidden shadow-md transition-transform transform hover:scale-105 flex flex-col justify-end text-center text-white">
-                {% if article.img is not empty %}
-                    <img src="{{ article.img[0] }}" alt="Image de l'article" class="absolute top-0 left-0 w-full h-full object-cover z-10 filter brightness-75">
-                {% else %}
-                    <img src="/path/to/default/image.jpg" alt="Image par défaut" class="absolute top-0 left-0 w-full h-full object-cover z-10 filter brightness-75">
-                {% endif %}
-                <div class="relative z-20 p-5 bg-black bg-opacity-40 rounded">
-                    <h2 class="text-lg mb-1">{{ article.title }}</h2>
-                    <p class="text-sm leading-tight mb-1"><strong>Prix :</strong> {{ article.price }} €</p>
-                </div>
+<div class="bg-gray-100 font-sans">
+    <div class="container mx-auto py-12 px-4">
+        <h1 class="text-3xl font-bold text-center mb-12 text-gray-800">Découvrez nos derniers articles</h1>
+        <div class="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {% for article in pagination %}
+                <a href="{{ path('app_article', { 'articleId': article.id }) }}" class="group relative block bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
+                    {% if article.img is not empty %}
+                        <img src="{{ article.img[0] }}" alt="{{ article.title }}" class="w-full h-56 object-cover group-hover:opacity-75 transition duration-300">
+                    {% else %}
+                        <img src="https://via.placeholder.com/400" alt="Image par défaut" class="w-full h-56 object-cover group-hover:opacity-75 transition duration-300">
+                    {% endif %}
+                    <div class="p-4">
+                        <h2 class="text-xl font-semibold text-gray-800 group-hover:text-indigo-600 transition duration-300">{{ article.title }}</h2>
+                        <p class="text-gray-600 mt-2">{{ article.description|slice(0, 100) }}...</p>
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="text-lg font-bold text-indigo-600">{{ article.price }} €</span>
+                            <button class="bg-indigo-600 text-white px-3 py-1 rounded-full text-sm hover:bg-indigo-700 transition duration-300">Voir plus</button>
+                        </div>
+                    </div>
+                </a>
+            {% else %}
+                <p class="text-center text-gray-600">Aucun article trouvé.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Contrôles de pagination -->
+        <div class="mt-8">
+            <div class="flex justify-center">
+                <nav class="flex space-x-2">
+                    {% if pagination.currentPageNumber > 1 %}
+                        <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'page': pagination.currentPageNumber - 1})) }}" class="px-3 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">Précédent</a>
+                    {% endif %}
+
+                    {% for page in 1..pagination.pageCount %}
+                        {% if page == pagination.currentPageNumber %}
+                            <span class="px-3 py-2 bg-indigo-600 text-white rounded">{{ page }}</span>
+                        {% else %}
+                            <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'page': page})) }}" class="px-3 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">{{ page }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if pagination.currentPageNumber < pagination.pageCount %}
+                        <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'page': pagination.currentPageNumber + 1})) }}" class="px-3 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">Suivant</a>
+                    {% endif %}
+                </nav>
             </div>
-        {% else %}
-            <p>Aucun article trouvé.</p>
-        </a>
-        {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

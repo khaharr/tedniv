@@ -1,0 +1,50 @@
+<!-- templates/partials/navbar.html.twig -->
+
+<nav class="bg-white shadow-lg">
+    <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-4">
+            <!-- Logo -->
+            <div>
+                <a href="{{ path('app_articles') }}" class="text-xl font-bold text-indigo-600">Detniv</a>
+            </div>
+            <!-- Menu -->
+            <div class="hidden md:flex space-x-8">
+                <a href="{{ path('app_articles') }}" class="text-gray-600 hover:text-indigo-600">Articles</a>
+                <a href="{{ path('app_login') }}" class="text-gray-600 hover:text-indigo-600">Connexion</a>
+                <a href="{{ path('app_register') }}" class="text-gray-600 hover:text-indigo-600">Inscription</a>
+                <!-- Ajoutez d'autres liens selon vos besoins -->
+            </div>
+            <!-- Bouton mobile -->
+            <div class="md:hidden">
+                <button id="nav-toggle" class="text-gray-600 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Menu mobile -->
+    <div id="nav-content" class="hidden md:hidden">
+        <ul class="px-4 pt-2 pb-4 space-y-1">
+                <a href="{{ path('app_articles') }}" class="text-gray-600 hover:text-indigo-600">Articles</a>
+                <a href="{{ path('app_login') }}" class="text-gray-600 hover:text-indigo-600">Connexion</a>
+                <a href="{{ path('app_register') }}" class="text-gray-600 hover:text-indigo-600">Inscription</a>
+            <!-- Ajoutez d'autres liens selon vos besoins -->
+        </ul>
+    </div>
+</nav>
+
+<!-- Script pour le menu mobile -->
+<script>
+    document.getElementById('nav-toggle').onclick = function () {
+        var navContent = document.getElementById('nav-content');
+        if (navContent.classList.contains('hidden')) {
+            navContent.classList.remove('hidden');
+        } else {
+            navContent.classList.add('hidden');
+        }
+    };
+</script>

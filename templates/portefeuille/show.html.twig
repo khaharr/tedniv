@@ -3,31 +3,62 @@
 {% block title %}Mon Portefeuille{% endblock %}
 
 {% block body %}
-<div class="container mx-auto p-8">
-    <h1 class="text-3xl font-bold mb-6">Portefeuille de {{ portefeuille.account.email }}</h1>
+<div class="container mx-auto p-8 font-sans">
+    <h1 class="text-4xl font-bold mb-8 text-center text-gray-800">Portefeuille de {{ portefeuille.account.email }}</h1>
 
-    <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
-        <h2 class="text-xl font-semibold">Solde Actuel</h2>
-        <p class="text-3xl text-green-600 font-bold">{{ portefeuille.solde }} €</p>
+    <!-- Carte du solde actuel -->
+    <div class="bg-white shadow-lg rounded-lg p-8 mb-12">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-semibold text-gray-700">Solde Actuel</h2>
+                <p class="text-5xl text-green-600 font-bold mt-4">{{ portefeuille.solde }} €</p>
+            </div>
+            <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-wallet-fill" viewBox="0 0 16 16">
+  <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
+  <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2z"/>
+</svg>
+            </div>
+        </div>
     </div>
 
-    <div class="flex space-x-4">
-        <a href="{{ path('wallet_transactions', { id: portefeuille.id }) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    <!-- Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Bouton Voir l'historique des transactions -->
+        <a href="{{ path('wallet_transactions_pdf', { id: portefeuille.id }) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            </svg>
             Voir l'historique des transactions
         </a>
-        <a href="{{ path('wallet_transactions_pdf', { id: portefeuille.id }) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+
+        <!-- Bouton Télécharger l'historique des transactions -->
+        <a href="{{ path('wallet_transactions', { id: portefeuille.id }) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg flex items-center justify-center transition duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+            </svg>
             Télécharger l'historique des transactions
         </a>
-        <form action="{{ path('wallet_update', { id: portefeuille.id }) }}" method="post">
-            <input type="number" name="amount" class="border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:border-blue-300" placeholder="Montant à déposer">
-            <select name="type" class="border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:border-blue-300">
-                <option value="withdraw">Déposer</option>
-                <option value="deposit">Retirer</option>
-            </select>
-            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" id="dynamic-button">
-                Déposer de l'argent
-            </button>
-        </form>
+
+        <!-- Formulaire de dépôt/retrait -->
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <form action="{{ path('wallet_update', { id: portefeuille.id }) }}" method="post">
+                <div class="mb-4">
+                    <label for="amount" class="block text-gray-700 font-semibold mb-2">Montant</label>
+                    <input type="number" name="amount" id="amount" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Entrer le montant">
+                </div>
+                <div class="mb-6">
+                    <label for="type" class="block text-gray-700 font-semibold mb-2">Type d'opération</label>
+                    <select name="type" id="type" class="w-full border border-gray-300 rounded-full p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="withdraw">Déposer</option>
+                        <option value="deposit">Retirer</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-full transition duration-300" id="dynamic-button">
+                    Déposer de l'argent
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -39,15 +70,14 @@
         selectElement.addEventListener('change', function() {
             if (this.value === 'withdraw') {
                 buttonElement.textContent = "Déposer de l'argent";
-                buttonElement.classList.remove('bg-red-500', 'hover:bg-red-700');
-                buttonElement.classList.add('bg-green-500', 'hover:bg-green-700');
+                buttonElement.classList.remove('bg-red-500', 'hover:bg-red-600');
+                buttonElement.classList.add('bg-green-500', 'hover:bg-green-600');
             } else if (this.value === 'deposit') {
                 buttonElement.textContent = "Retirer de l'argent";
-                buttonElement.classList.remove('bg-green-500', 'hover:bg-green-700');
-                buttonElement.classList.add('bg-red-500', 'hover:bg-red-700');
+                buttonElement.classList.remove('bg-green-500', 'hover:bg-green-600');
+                buttonElement.classList.add('bg-red-500', 'hover:bg-red-600');
             }
         });
     });
 </script>
-        
 {% endblock %}

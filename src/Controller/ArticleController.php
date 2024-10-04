@@ -18,9 +18,11 @@ class ArticleController extends AbstractController
     public function index(int $articleId): Response
     {
         $article = $this->queryService->GetArticle($articleId);
+        $user = $this->getUser();
 
         return $this->render('article/article.html.twig', [
             'article' => $article,
+            'user'=> $user
         ]);
     }
 }

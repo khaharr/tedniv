@@ -3,53 +3,37 @@
 {% block title %}Messagerie{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h2>Conversation avec {{ recipient.email }}</h2>
-    <div class="message-container mb-4">
+<div class="container mx-auto py-8 px-4 font-sans">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Conversation avec {{ recipient.email }}</h2>
+
+    <!-- Conteneur des messages -->
+    <div class="message-container mb-8 bg-white shadow rounded-lg p-6 overflow-y-auto" style="max-height: 500px;">
         {% for message in messages %}
-            <div class="message {% if message.sender == app.user %}message-sent{% else %}message-received{% endif %}">
-                <p><strong>{{ message.sender.email }}:</strong></p>
-                <p>{{ message.content }}</p>
-                <small>{{ message.sentAt|date('d/m/Y H:i') }}</small>
+            <div class="mb-4">
+                <div class="flex {% if message.sender == app.user %}justify-end{% else %}justify-start{% endif %}">
+                    <div class="{% if message.sender == app.user %}bg-blue-500 text-white{% else %}bg-gray-200 text-gray-800{% endif %} max-w-xs rounded-lg p-4">
+                        <p class="mb-2"><strong>{{ message.sender.email }}</strong></p>
+                        <p class="mb-2">{{ message.content }}</p>
+                        <small class="text-xs {% if message.sender == app.user %}text-gray-200{% else %}text-gray-600{% endif %}">{{ message.sentAt|date('d/m/Y H:i') }}</small>
+                    </div>
+                </div>
             </div>
         {% else %}
-            <p>Aucun message pour le moment.</p>
+            <p class="text-center text-gray-600">Aucun message pour le moment.</p>
         {% endfor %}
     </div>
 
+    <!-- Formulaire d'envoi de message -->
     <div class="send-message-form">
-        {{ form_start(form) }}
-            <div class="mb-3">
-                {{ form_widget(form.content) }}
+        {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+            <div>
+                {{ form_widget(form.content, {'attr': {'class': 'w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500'}}) }}
+                {{ form_errors(form.content) }}
             </div>
-            <button type="submit" class="btn btn-primary">Envoyer</button>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                Envoyer
+            </button>
         {{ form_end(form) }}
     </div>
 </div>
-
-<style>
-.message-container {
-    max-height: 400px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
-    padding: 10px;
-    background-color: #f9f9f9;
-}
-
-.message {
-    margin-bottom: 15px;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.message-sent {
-    background-color: #d1ffd7;
-    text-align: right;
-}
-
-.message-received {
-    background-color: #ffd1d1;
-    text-align: left;
-}
-</style>
 {% endblock %}

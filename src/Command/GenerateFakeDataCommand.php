@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateFakeDataCommand extends Command
 {
-    protected static $defaultName = 'app:generate-fake-data';
     private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
