@@ -1,0 +1,6 @@
+knp_snappy:
+    pdf:
+        enabled:    true
+        binary:     '%env(WKHTMLTOPDF_PATH)%' # Assurez-vous que le chemin est correct
+        options:
+            enable-local-file-access: true
