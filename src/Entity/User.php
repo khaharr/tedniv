@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\UserRepository;
@@ -35,8 +34,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
+
     #[ORM\OneToOne(mappedBy: 'Account', cascade: ['persist', 'remove'])]
     private ?Portefeuille $portefeuille = null;
+
     public function __construct()
     {
         $this->roles = ['ROLE_USER']; // Set the default role to ROLE_USER
@@ -69,6 +70,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 
+    // Ajout de la méthode getUsername
+    public function getUsername(): string
+    {
+        return $this->getUserIdentifier();
+    }
+
     /**
      * @see UserInterface
      *
@@ -77,7 +84,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
@@ -94,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @see PasswordAuthenticatedUser   Interface
+     * @see PasswordAuthenticatedUserInterface
      */
     public function getPassword(): ?string
     {
@@ -113,7 +119,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
 
@@ -125,6 +130,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAddress(?string $address): static
     {
         $this->address = $address;
+        return $this;
+    }
+
     public function getPortefeuille(): ?Portefeuille
     {
         return $this->portefeuille;
@@ -132,7 +140,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPortefeuille(Portefeuille $portefeuille): static
     {
-        // set the owning side of the relation if necessary
         if ($portefeuille->getAccount() !== $this) {
             $portefeuille->setAccount($this);
         }

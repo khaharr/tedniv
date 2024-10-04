@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Entity;
-
 
 use App\Repository\ArticlesRepository;
 use Doctrine\DBAL\Types\Types;
@@ -22,18 +20,9 @@ class Articles
     #[ORM\Column(type: 'float')]
     private $price;
 
-    // Relation ManyToOne avec User (vendeur)
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private $seller;
-
-    // Getters et setters...
-
-    #[ORM\Column(length: 35)]
-    private ?string $Title = null;
-
-    #[ORM\Column]
-    private ?float $Price = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $Description = null;
@@ -51,24 +40,23 @@ class Articles
 
     public function getTitle(): ?string
     {
-        return $this->Title;
+        return $this->title;
     }
 
-    public function setTitle(string $Title): static
+    public function setTitle(string $title): static
     {
-        $this->Title = $Title;
+        $this->title = $title;
         return $this;
     }
 
     public function getPrice(): ?float
     {
-        return $this->Price;
+        return $this->price;
     }
 
-    public function setPrice(float $Price): static
+    public function setPrice(float $price): static
     {
-        $this->Price = $Price;
-
+        $this->price = $price;
         return $this;
     }
 
@@ -101,13 +89,15 @@ class Articles
         return $this->img;
     }
 
-    public function setImg(array $img): static
+    public function setImg($img): static
     {
+        // Si $img n'est pas un tableau, on attribue un tableau vide
+        if (!is_array($img)) {
+            $img = [];
+        }
+
         $this->img = $img;
 
         return $this;
     }
-
 }
-
-
