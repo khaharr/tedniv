@@ -31,7 +31,7 @@ class Articles
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $UUID = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
+    #[ORM\Column(type: Types::JSON)]
     private array $img = [];
 
     public function getId(): ?int

@@ -32,7 +32,7 @@ class PortefeuilleController extends AbstractController
             $entityManager->persist($portefeuille);
             $entityManager->flush();
         }
-        
+
         return $this->render('portefeuille/show.html.twig', [
             'portefeuille' => $portefeuille,
             // 'transactions' => $portefeuille->getTransactions(),
@@ -131,21 +131,24 @@ class PortefeuilleController extends AbstractController
         return new Response("Retrait de {$amount}€ effectué ! Solde actuel : " . $Portefeuille->getSolde() . "€.");
     }
 
-    // #[Route('/wallet/{id}/transactions/pdf', name: 'wallet_transactions_pdf', methods: ['GET'])]
-    // public function exportPdf(Portefeuille $Portefeuille, \Knp\Snappy\Pdf $knpSnappyPdf): Response
-    // {
-    //     $html = $this->renderView('portefeuille/transactions_pdf.html.twig', [
-    //         'portefeuille' => $Portefeuille,
-    //         'transactions' => $Portefeuille->getTransactions(),
-    //     ]);
+    #[Route('/wallet/{id}/transactions/pdf', name: 'wallet_transactions_pdf', methods: ['GET'])]
+    public function exportPdf(Portefeuille $Portefeuille, \Knp\Snappy\Pdf $knpSnappyPdf): Response
+    {
+        $html = $this->renderView('portefeuille/transactions.html.twig', [
+            'portefeuille' => $Portefeuille,
+            'transactions' => $Portefeuille->getTransactions(),
+        ]);
 
-    //     return new Response(
-    //         $knpSnappyPdf->getOutputFromHtml($html),
-    //         200,
-    //         [
-    //             'Content-Type' => 'application/pdf',
-    //             'Content-Disposition' => 'attachment; filename="transactions.pdf"',
-    //         ]
-    //     );
-    // }
+        $knpSnappyPdf->setOption('enable-local-file-access', true);
+
+
+        return new Response(
+            $knpSnappyPdf->getOutputFromHtml($html),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="transactions.pdf"',
+            ]
+        );
+    }
 }
