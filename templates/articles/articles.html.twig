@@ -118,6 +118,7 @@
 <div class="example-wrapper">
     {% for article in articles %}
         <div class="article-card">
+        <a href="{{ path('app_article', { 'articleId': article.id }) }}" class="article-card">
             <img src="{{ article.img[0] }}" alt="Image de l'article">
             <div class="article-card-content">
                 <h2>{{ article.title }}</h2>
