@@ -36,7 +36,6 @@
         transform: scale(1.05); 
     }
 
-    
     .article-card img {
         position: absolute;
         top: 0;
@@ -48,7 +47,6 @@
         filter: brightness(70%); 
     }
 
-    
     .article-card-content {
         position: relative;
         z-index: 2; 
@@ -74,7 +72,6 @@
         color: #fff;
     }
 
-    
     @media (max-width: 1200px) {
         .example-wrapper {
             grid-template-columns: repeat(4, 1fr); 
@@ -117,16 +114,16 @@
 
 <div class="example-wrapper">
     {% for article in articles %}
-        <div class="article-card">
+        <!-- Lien autour de chaque carte d'article -->
+        <a href="{{ path('app_article', { 'articleId': article.id }) }}" class="article-card">
             <img src="{{ article.img[0] }}" alt="Image de l'article">
             <div class="article-card-content">
                 <h2>{{ article.title }}</h2>
                 <p><strong>Prix :</strong> {{ article.price }} €</p>
             </div>
-        </div>
+        </a>
     {% else %}
         <p>Aucun article trouvé.</p>
     {% endfor %}
-    
 </div>
 {% endblock %}
